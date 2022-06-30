@@ -1,10 +1,22 @@
 import React from 'react';
 import { useForm } from "react-hook-form";
-
-const Modal = () => {
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
-  console.log(errors)
-  const onSubmit = data => console.log(data);
+const Modal = ({refetch}) => {
+  const { register, handleSubmit, formState: { errors },reset } = useForm();
+  const onSubmit = data => {
+    fetch('http://localhost:5000/add-billing', {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }).then(res => res.json()).then(data => {
+      if (data.messages === 'success') {
+        refetch()
+        reset()
+      }
+    })
+    
+  };
 
 return (
 <div>
@@ -28,13 +40,13 @@ return (
           {errors.email?.type === 'pattern' && <span className='text-red-500'>Invalid Email</span>}
           </div>
            {/* ====================Number Filed======================== */}
-          <input type="number" placeholder="Your Number" class="input input-bordered mx-auto w-3/4"{...register("number", { required: true, pattern: /^\d{11}$/ })} />
+          <input type="number" placeholder="Your Number" class="input input-bordered mx-auto w-3/4" {...register("number", { required: true, pattern: /^\d{11}$/ })} />
           <div className='w-3/4 mx-auto'>
           {errors.number?.type === 'required' && <span className='text-red-500'>Number is required</span>}
           {errors.number?.type === 'pattern' && <span className='text-red-500'>Phone Number Should be 11 Digit</span>}
           </div>
           {/* ====================Paid Amount Filed======================== */}
-          <input type="number" placeholder="Paid Amount" class="input input-bordered mx-auto w-3/4" {...register("amount", { required: true, pattern: /^[62|0]+\d{9}/ })} />
+          <input type="number" placeholder="Paid Amount" class="input input-bordered mx-auto w-3/4" {...register("amount", { required: true })} />
           <div className='w-3/4 mx-auto'>
           {errors.amount?.type === 'required' && <span className='text-red-500'>Amount is required</span>}
          </div>

@@ -1,7 +1,13 @@
 import React from 'react';
 import Modal from '../Modal/Modal';
+import Tabel from '../Tabel/Tabel';
+import { useQuery } from 'react-query';
 
 const Billings = () => {
+    const { data,isLoading,refetch } = useQuery('billingdata', ()=>fetch('http://localhost:5000/billing-list').then(res => res.json()))
+    if (isLoading) {
+        return
+    }
     return (
         <div className='px-10'>
             <div class="navbar bg-gray-500">
@@ -15,7 +21,8 @@ const Billings = () => {
                    <label htmlFor="my-modal-3" class="btn modal-button">Add New Bill</label>
                 </div>
             </div>
-            <Modal/>
+            <Tabel data={data} />
+            <Modal refetch={refetch} />
         </div>
     );
 };
