@@ -1,11 +1,23 @@
 import React from 'react';
-
-const Tabel = ({data}) => {
-    
+import Modal from '../Modal/Modal';
+const Tabel = ({ data, refetch }) => {
+    const DeleteData = (_id) => {
+        fetch(`http://localhost:5000/delete-billing/${_id}`, {
+            method:"DELETE"
+        }).then(res => res.json()).then(data => {
+            if (data.acknowledged) {
+                refetch()
+            }
+        })
+       
+    } 
+    const Updatepd = (_id) => { 
+        
+    }
     return (
         <div className=' mt-5'>
-            <div class="overflow-x-auto">
-        <table class="table w-full">
+            <div className="overflow-x-auto">
+        <table className="table w-full">
     <thead>
       <tr>
         <th>Billing ID</th>
@@ -22,12 +34,16 @@ const Tabel = ({data}) => {
                                 <td>{td.name}</td>
                                 <td>{td.email}</td>
                                 <td>{td.amount}</td>
-                                <td>action</td>
+                                <td className='flex gap-3'> <label htmlFor="my-modal-3" className='btn btn-xs' onClick={()=>Updatepd(td._id)}>Edit</label> <button className='btn btn-xs'
+                                onClick={()=>DeleteData(td._id)}
+                                >Delete</button></td>
+                                
                               </tr>)
     }
     </tbody>
   </table>
-</div>
+            </div>
+            
         </div>
     );
 };
